@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUHAIB - Tech Universe</title>
+    <!-- استدعاء خط "كايرو" ليكون الخط عربياً وتقنياً -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. CSS RESET & GLOBAL VARIABLES (الأساسيات)
+           ========================================= */
+        :root {
+            --primary: #00f3ff;       /* أزرق سماوي نيون */
+            --secondary: #bc13fe;     /* بنفسجي نيون */
+            --bg-dark: #050510;       /* أسود كحلي */
+            --card-glass: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 20%);
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+
+        /* =========================================
+           2. HEADER & NAV (القائمة العلوية)
+           ========================================= */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--primary);
+        }
+
+        .insta-btn {
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 30px;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insta-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* =========================================
+           3. HERO SECTION (المعرض الدوار)
+           ========================================= */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: 10;
+        }
+
+        /* --- كود المعرض 3D الخاص بك --- */
+        .wrapper {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .inner {
+            --w: 160px;
+            --h: 220px;
+            --translateZ: 400px;
+            --rotateX: -10deg;
+            position: absolute;
+            width: var(--w);
+            height: var(--h);
+            top: 10%;
+            left: calc(50% - (var(--w) / 2));
+            transform-style: preserve-3d;
+            animation: rotating 20s linear infinite;
+        }
+
+        @keyframes rotating {
+            from { transform: perspective(1000px) rotateX(var(--rotateX)) rotateY(0deg); }
+            to { transform: perspective(1000px) rotateX(var(--rotateX)) rotateY(360deg); }
+        }
+
+        .card {
+            position: absolute;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            overflow: hidden;
+            inset: 0;
+            transform: rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ));
+            background: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .card .img {
+            width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+        }
+
+        /* =========================================
+           4. SECTIONS LAYOUT (تنسيق الأقسام)
+           ========================================= */
+        .section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            padding: 50px 10%;
+            gap: 50px;
+            position: relative;
+        }
+
+        .section:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        /* الصندوق النصي الزجاجي */
+        .text-content {
+            flex: 1;
+            background: var(--card-glass);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+
+        .text-content:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        .text-content h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .text-content ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+        .text-content ul li {
+            margin-bottom: 10px;
+            padding-right: 20px;
+            position: relative;
+        }
+        .text-content ul li::before {
+            content: "▹";
+            position: absolute;
+            right: 0;
+            color: var(--secondary);
+        }
+
+        /* منطقة العناصر البصرية (صور وأكواد) */
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .main-img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+            border: 1px solid var(--border-glass);
+            transition: 0.5s;
+        }
+        .main-img:hover {
+            transform: scale(1.02) rotate(2deg);
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.5);
+        }
+
+        /* =========================================
+           5. CUSTOM CODE STYLES (تنسيق أكوادك)
+           ========================================= */
+        
+        /* Generating Loader */
+        .loader-wrapper {
+            position: relative; display: flex; align-items: center; justify-content: center;
+            width: 180px; height: 180px; font-weight: bold; font-family: monospace;
+        }
+        .loader-letter { color: var(--secondary); font-size: 1.5rem; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100% {transform: translateY(0); opacity: 0.5;} 50% {transform: translateY(-10px); opacity: 1; color: var(--primary);} }
+
+        /* Chip Loader */
+        .chip-container svg { width: 100%; max-width: 400px; height: auto; filter: drop-shadow(0 0 10px var(--primary)); }
+        .trace-flow { stroke: var(--primary); animation: dash 2s linear infinite; stroke-dasharray: 10; }
+        @keyframes dash { to { stroke-dashoffset: -100; } }
+
+        /* Reactor */
+        .reactor-box { transform: scale(0.8); } /* تصغير الحجم قليلاً */
+        .svg-frame { position: relative; width: 300px; height: 300px; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; }
+        .svg-frame svg { position: absolute; width: 100%; height: 100%; transition: 0.5s; }
+        .svg-frame:hover svg { transform: rotate(-10deg) scale(1.1); }
+        
+        /* Blob */
+        .blob-wrapper { transform: scale(1.5); }
+
+        /* =========================================
+           6. RESPONSIVE (للموبايل)
+           ========================================= */
+        @media (max-width: 768px) {
+            .section {
+                flex-direction: column !important; /* إجبار العناصر فوق بعض */
+                padding: 60px 5%;
+                text-align: center;
+                gap: 30px;
+            }
+            
+            .text-content { text-align: center; padding: 25px; }
+            .text-content p { text-align: center; }
+            .text-content ul li { padding-right: 0; }
+            .text-content ul li::before { display: none; }
+
+            .hero h1 { font-size: 2rem; }
+            
+            /* تعديل المعرض للموبايل */
+            .inner {
+                --w: 100px; --h: 150px; --translateZ: 180px;
+            }
+            .wrapper { height: 250px; margin-top: 20px; }
+
+            .main-img { max-width: 100%; }
+        }
+
+        /* =========================================
+           7. FOOTER
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: #000;
+            border-top: 1px solid var(--border-glass);
+            margin-top: 50px;
+        }
+        footer p { color: #666; font-size: 0.9rem; }
+
+        /* تأثير الظهور عند التمرير */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- القائمة -->
+    <nav>
+        <div class="logo">SUHAIB</div>
+        <a href="https://www.instagram.com/s.h.b16.off?igsh=ZjVlemE2eW8wcmpu" target="_blank" class="insta-btn">Instagram</a>
+    </nav>
+
+    <!-- الواجهة الرئيسية (المعرض) -->
+    <header class="hero">
+        <h1>إمبراطورية البرمجيات</h1>
+        <p style="color: var(--text-muted);">بوابة المستقبل الرقمي</p>
+        
+        <!-- صورك من 1 إلى 10 -->
+        <div class="wrapper">
+            <div class="inner" style="--quantity: 10;">
+                <div class="card" style="--index: 0;"><div class="img" style="background-image: url('1.jpg');"></div></div>
+                <div class="card" style="--index: 1;"><div class="img" style="background-image: url('2.jpg');"></div></div>
+                <div class="card" style="--index: 2;"><div class="img" style="background-image: url('3.jpg');"></div></div>
+                <div class="card" style="--index: 3;"><div class="img" style="background-image: url('4.jpg');"></div></div>
+                <div class="card" style="--index: 4;"><div class="img" style="background-image: url('5.jpg');"></div></div>
+                <div class="card" style="--index: 5;"><div class="img" style="background-image: url('6.jpg');"></div></div>
+                <div class="card" style="--index: 6;"><div class="img" style="background-image: url('7.jpg');"></div></div>
+                <div class="card" style="--index: 7;"><div class="img" style="background-image: url('8.jpg');"></div></div>
+                <div class="card" style="--index: 8;"><div class="img" style="background-image: url('9.jpg');"></div></div>
+                <div class="card" style="--index: 9;"><div class="img" style="background-image: url('10.jpg');"></div></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 1. تقنية المعلومات -->
+    <section class="section reveal">
+        <div class="text-content">
+            <h2>تقنية المعلومات (IT)</h2>
+            <p>
+                هي العمود الفقري للمؤسسات الحديثة. تتعلق الـ IT باستخدام الأنظمة (خاصة الكمبيوتر والاتصالات) لتخزين، واسترجاع، ونقل، ومعالجة البيانات.
+            </p>
+            <p>
+                تشمل تخصصات مثل: إدارة الشبكات، إدارة قواعد البيانات، الدعم الفني، والحوسبة السحابية. الهدف الأساسي هو ضمان تدفق المعلومات بسلاسة وأمان.
+            </p>
+        </div>
+        <div class="visual-content">
+            <img src="11.jpg" alt="IT Concept" class="main-img">
+        </div>
+    </section>
+
+    <!-- 2. السفتوير (برمجيات) + Generating Code -->
+    <section class="section reveal">
+        <div class="visual-content">
+            <!-- كودك المدمج (Generating) -->
+            <div class="loader-wrapper">
+                <span class="loader-letter" style="animation-delay:0.1s">C</span>
+                <span class="loader-letter" style="animation-delay:0.2s">O</span>
+                <span class="loader-letter" style="animation-delay:0.3s">D</span>
+                <span class="loader-letter" style="animation-delay:0.4s">E</span>
+                <span class="loader-letter" style="animation-delay:0.5s">.</span>
+                <span class="loader-letter" style="animation-delay:0.6s">.</span>
+                <div style="position: absolute; width: 100%; height: 100%; border: 2px dashed var(--primary); border-radius: 50%; animation: rotating 5s linear infinite;"></div>
+            </div>
+        </div>
+        <div class="text-content">
+            <h2>عالم السفتوير (Software)</h2>
+            <p>
+                البرمجيات هي مجموعة من التعليمات التي تخبر الكمبيوتر ماذا يفعل. تنقسم إلى قسمين رئيسيين:
+            </p>
+            <ul>
+                <li><strong>System Software:</strong> مثل أنظمة التشغيل، وهي المسؤولة عن إدارة موارد الجهاز.</li>
+                <li><strong>Application Software:</strong> البرامج التي يستخدمها المستخدم مثل Word، Photoshop، والمتصفحات.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 3. أنظمة التشغيل + Chip Code -->
+    <section class="section reveal">
+        <div class="text-content">
+            <h2>أنظمة التشغيل (OS)</h2>
+            <p>
+                نظام التشغيل هو أهم برنامج يعمل على الكمبيوتر. يقوم بإدارة الذاكرة والعمليات وجميع برامجك وأجهزتك.
+            </p>
+            <ul>
+                <li><strong>Windows:</strong> الأكثر انتشاراً، سهل الاستخدام، ويدعم أغلب الألعاب والبرامج.</li>
+                <li><strong>Linux:</strong> مفتوح المصدر، آمن جداً، ومثالي للمبرمجين والسيرفرات.</li>
+                <li><strong>macOS:</strong> مبني على Unix، مستقر جداً، ومفضل للمصممين.</li>
+            </ul>
+        </div>
+        <div class="visual-content chip-container">
+            <!-- كودك المدمج (Chip) - نسخة مبسطة لتعمل بدون SVG خارجي -->
+            <div style="width: 300px; height: 200px; border: 2px solid var(--primary); border-radius: 10px; position: relative; display: flex; align-items: center; justify-content: center; background: #000;">
+                <div style="position: absolute; top:0; left: 50%; width: 2px; height: 100%; background: var(--border-glass);"></div>
+                <div style="position: absolute; top:50%; left: 0; width: 100%; height: 2px; background: var(--border-glass);"></div>
+                <div style="z-index: 2; background: #111; padding: 10px 20px; border: 1px solid var(--secondary); border-radius: 5px; color: #fff;">CPU CORE</div>
+                <!-- مسارات مضيئة -->
+                <div style="position: absolute; top: 20px; left: 20px; width: 10px; height: 10px; background: var(--primary); box-shadow: 0 0 10px var(--primary); border-radius: 50%;"></div>
+                <div style="position: absolute; bottom: 20px; right: 20px; width: 10px; height: 10px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); border-radius: 50%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. الأمن السيبراني + Reactor Code -->
+    <section class="section reveal">
+        <div class="visual-content reactor-box">
+            <!-- كودك المدمج (Reactor) -->
+            <div class="svg-frame">
+                <svg style="--i:0;--j:0;">
+                    <g>
+                        <circle cx="150" cy="150" r="100" stroke="var(--primary)" stroke-width="2" fill="none" stroke-dasharray="20 10" style="animation: rotating 4s linear infinite reverse; transform-origin: center;" />
+                        <rect x="100" y="100" width="100" height="100" stroke="var(--secondary)" stroke-width="2" fill="none" style="animation: rotating 6s linear infinite; transform-origin: center;" />
+                    </g>
+                </svg>
+                <h3 style="position: absolute; color: #fff;">SECURE</h3>
+            </div>
+        </div>
+        <div class="text-content">
+            <h2>الأمن السيبراني (Cyber Security)</h2>
+            <p>
+                هو ممارسة حماية الأنظمة والشبكات والبرامج من الهجمات الرقمية. تهدف هذه الهجمات عادةً إلى الوصول إلى المعلومات الحساسة أو تغييرها أو تدميرها.
+            </p>
+            <p>
+                يشمل ذلك أمن الشبكات (Network Security)، أمن التطبيقات، وأمن المعلومات. يعتمد على التشفير (Encryption) والجدران النارية (Firewalls).
+            </p>
+        </div>
+    </section>
+
+    <!-- 5. الذكاء الاصطناعي (AI) + Blob Code -->
+    <section class="section reveal">
+        <div class="text-content">
+            <h2>الذكاء الاصطناعي (AI)</h2>
+            <p>
+                الذكاء الاصطناعي هو محاكاة عمليات الذكاء البشري بواسطة الآلات، وخاصة أنظمة الكمبيوتر.
+            </p>
+            <ul>
+                <li><strong>Machine Learning:</strong> جعل الكمبيوتر يتعلم من البيانات دون برمجة صريحة.</li>
+                <li><strong>Deep Learning:</strong> استخدام شبكات عصبية تحاكي دماغ الإنسان لمعالجة البيانات المعقدة مثل الصور والصوت.</li>
+            </ul>
+        </div>
+        <div class="visual-content blob-wrapper">
+            <!-- كودك المدمج (Blob) -->
+            <div style="width: 150px; height: 150px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; animation: morph 5s ease-in-out infinite; box-shadow: 0 0 20px var(--secondary);"></div>
+            <style>@keyframes morph { 0%,100% {border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;} 33% {border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;} 66% {border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;} }</style>
+        </div>
+    </section>
+
+    <!-- 6. المستقبل (صورة 12) -->
+    <section class="section reveal">
+        <div class="visual-content">
+            <img src="12.jpg" alt="Future Tech" class="main-img">
+        </div>
+        <div class="text-content">
+            <h2>الحوسبة السحابية & IoT</h2>
+            <p>
+                المستقبل لا يعتمد على أجهزة التخزين المحلية. الحوسبة السحابية (Cloud) تتيح الوصول للبيانات والخدمات عبر الإنترنت (مثل AWS, Azure).
+            </p>
+            <p>
+                بينما إنترنت الأشياء (IoT) يربط الأجهزة اليومية (ثلاجات، ساعات، سيارات) بالإنترنت لتتبادل البيانات وتصبح "ذكية".
+            </p>
+        </div>
+    </section>
+
+    <!-- 7. الختام (صورة 13) -->
+    <section class="section reveal" style="flex-direction: column;">
+        <h2 style="color: var(--text-main); text-align: center;">نهاية الرحلة.. وبداية المستقبل</h2>
+        <img src="13.jpg" alt="End" class="main-img" style="max-width: 800px;">
+    </section>
+
+    <footer>
+        <p>Developed & Designed by <strong>SUHAIB</strong> &copy; 2024</p>
+    </footer>
+
+    <!-- سكربت بسيط لتفعيل حركة الظهور عند التمرير -->
+    <script>
+        window.addEventListener('scroll', function(){
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++){
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                var revealPoint = 150;
+                if(revealTop < windowHeight - revealPoint){
+                    reveals[i].classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
